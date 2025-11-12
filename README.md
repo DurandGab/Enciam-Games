@@ -1,4 +1,5 @@
 Enciam Games – Application Kotlin utilisant l’API RAWG
+
 Description : Enciam Games  est une application mobile développée en Kotlin qui permet de rechercher, filtrer et consulter des jeux vidéo via l’API RAWG.
 L’application offre également la possibilité d’ajouter ses propres jeux dans une base de données locale, afin de compléter la liste existante.
 
