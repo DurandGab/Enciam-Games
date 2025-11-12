@@ -9,12 +9,13 @@ Fonctionnalités principales
 Affiche la liste complète des jeux provenant de l’API RAWG.
 Barre de recherche permettant de filtrer par :
 - Nom du jeu
-- Genre
+
 
 Filtres dynamiques :
-- Les jeux les mieux notés
+- Les jeux les mieux notés (sous la référence de MetaCritics)
 - Les plus joués
 - Date de sortie
+- Genre
 
 En cliquant sur un jeu, redirection vers l’écran de détails.
 
