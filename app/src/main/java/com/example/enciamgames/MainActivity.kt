@@ -28,7 +28,7 @@ import java.util.Map.entry
 
 
 data object Destination1
-data object Destination2
+data class Destination2(val id: Int)
 data object Destination3
 
 class MainActivity : ComponentActivity() {
@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
             val backStack = remember { mutableStateListOf<Any>(Destination1) }
             val currentTitle = when (backStack.last()) {
                 Destination1 -> "Bienvenue"
-                Destination2 -> "Detail du jeu"
+                is Destination2 -> "Detail du jeu"
                 Destination3 -> "Favoris"
                 else -> ""
             }
@@ -74,7 +74,9 @@ class MainActivity : ComponentActivity() {
                         backStack = backStack,
                         entryProvider = entryProvider {
                             entry<Destination1> { PageAccueilJeuxVideo(backStack, viewModel) }
-                            entry<Destination2> { PageDetailJeuVideo(backStack) }
+                            entry<Destination2> { dest ->
+                                PageDetailJeuVideo(backStack, dest.id, viewModel)
+                            }
                             entry<Destination3> { PageFavoriJeuVideo(backStack) }
                         }
                     )

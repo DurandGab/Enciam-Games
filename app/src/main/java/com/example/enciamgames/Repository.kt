@@ -49,12 +49,12 @@ class MonRepository {
         return response.results
     }
 
-    /*suspend fun getDetailJeuVideo(id: Int): DetailJeuVideo {
+    suspend fun getDetailJeuVideo(id: Int): DetailJeuVideo {
         val response: DetailJeuVideo = client.request("${baseUrl}games/$id") {
             method = HttpMethod.Get
             parameter("key", apiKey)
         }.body()
 
         return response
-    }*/
+    }
 }

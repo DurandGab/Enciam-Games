@@ -47,22 +47,22 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(jeux) { game ->
+        items(jeux) { jeu ->
             Card(
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-
+                        backStack.add(Destination2(jeu.id))
                     },
                 elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
             ) {
                 Box(modifier = Modifier.height(180.dp)) {
 
-                    game.background_image?.let { imageUrl ->
+                    jeu.background_image?.let { imageUrl ->
                         AsyncImage(
                             model = imageUrl,
-                            contentDescription = game.name,
+                            contentDescription = jeu.name,
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
                         )
@@ -80,19 +80,19 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                             .padding(16.dp)
                     ) {
                         Text(
-                            text = game.name,
+                            text = jeu.name,
                             color = Color.White,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "Note Metacritic: ${game.metacritic} / 100",
+                            text = "Note Metacritic: ${jeu.metacritic} / 100",
                             color = Color.Yellow,
                             fontSize = 14.sp
                         )
                         Text(
-                            text = "Sorti le : ${game.released ?: "N/A"}",
+                            text = "Sorti le : ${jeu.released ?: "N/A"}",
                             color = Color.White,
                             fontSize = 12.sp
                         )

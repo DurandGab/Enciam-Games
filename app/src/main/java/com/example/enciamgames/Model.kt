@@ -42,37 +42,24 @@ data class DetailJeuVideo(
     val name_original: String? = null,
     val description: String? = null,
     val metacritic: Int? = null,
-    val metacritic_platforms: List<MetacriticPlatform>? = null,
     val released: String? = null,
     val tba: Boolean,
     val updated: String? = null,
     val background_image: String? = null,
-    val background_image_additional: String? = null,
-    val website: String? = null,
-    val rating: Double,
-    val rating_top: Int,
-    val ratings: JsonElement? = null,
     val reactions: JsonElement? = null,
     val added: Int,
-    val added_by_status: JsonElement? = null,
     val playtime: Int,
     val screenshots_count: Int,
     val movies_count: Int,
     val creators_count: Int,
     val achievements_count: Int,
-    val parent_achievements_count: String? = null,
     val reddit_url: String? = null,
     val reddit_name: String? = null,
     val reddit_description: String? = null,
     val reddit_logo: String? = null,
     val reddit_count: Int? = null,
-    val twitch_count: String? = null,
-    val youtube_count: String? = null,
-    val reviews_text_count: String? = null,
     val ratings_count: Int,
     val suggestions_count: Int,
-    val alternative_names: List<String>? = null,
-    val metacritic_url: String? = null,
     val parents_count: Int,
     val additions_count: Int,
     val game_series_count: Int,
@@ -105,11 +92,5 @@ data class Platform(
 data class Requirements(
     val minimum: String? = null,
     val recommended: String? = null
-)
-
-@Serializable
-data class MetacriticPlatform(
-    val metascore: Int,
-    val url: String
 )
 
