@@ -9,7 +9,6 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.SIMPLE
-import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.request
 import io.ktor.http.HttpMethod
@@ -56,5 +55,16 @@ class MonRepository {
         }.body()
 
         return response
+    }
+
+    suspend fun rechercheJeuxVideosParNom(nom: String, page: Int): List<JeuVideo> {
+        val response: RawgResponse = client.request("${baseUrl}games") {
+            method = HttpMethod.Get
+            parameter("key", apiKey)
+            parameter("search", nom)
+            parameter("page", page)
+        }.body()
+
+        return response.results
     }
 }

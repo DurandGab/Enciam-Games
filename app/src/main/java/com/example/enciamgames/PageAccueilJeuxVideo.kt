@@ -20,6 +20,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,6 +37,8 @@ import coil.compose.AsyncImage
 @Composable
 fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) {
     val jeux by viewModel.jeuvideo.collectAsState()
+    val chargementpage by viewModel.chargementPage.collectAsState()
+    val recherchenomjeuvideo by viewModel.recherchenomjeuvideo.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getJeuxVideos()
@@ -47,6 +50,35 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        stickyHeader {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                TextField(
+                    value = recherchenomjeuvideo,
+                    onValueChange = { newValue ->
+                        viewModel.recherchenomjeuvideo.value = newValue
+                        if (newValue.isEmpty()) {
+                            viewModel.resetRecherche()
+                        }
+                    },
+                    label = { Text("Rechercher un jeu") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Button(
+                    onClick = {
+                        viewModel.getRechercheNomJeuVideo(
+                            nom = recherchenomjeuvideo
+                        )
+                    },
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Text("Rechercher")
+                }
+            }
+        }
+
         items(jeux) { jeu ->
             Card(
                 shape = RoundedCornerShape(12.dp),
@@ -58,7 +90,6 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                 elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
             ) {
                 Box(modifier = Modifier.height(180.dp)) {
-
                     jeu.background_image?.let { imageUrl ->
                         AsyncImage(
                             model = imageUrl,
@@ -67,14 +98,11 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                             contentScale = ContentScale.Crop
                         )
                     }
-                    }
-
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .background(Color(0x66000000))
                     )
-
                     Column(
                         modifier = Modifier
                             .padding(16.dp)
@@ -100,5 +128,23 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                 }
             }
         }
+        item {
+            if (chargementpage) {
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    Text(text = "Chargement...")
+                }
+            }else{
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedButton(
+                    onClick = {
+                        viewModel.getJeuxVideos()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Charger plus de jeux")
+                }
+            }
+        }
     }
+}
 

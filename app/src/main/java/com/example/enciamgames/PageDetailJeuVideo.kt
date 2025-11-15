@@ -66,6 +66,4 @@ val detailJeuVideo by viewModel.detailjeuvideo.collectAsState()
             Text(text = fromHtml(jeu.description ?: "Pas de description disponible."))
         }
     }
-
-
 }
