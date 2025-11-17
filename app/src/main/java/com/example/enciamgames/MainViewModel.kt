@@ -29,7 +29,7 @@ class MainViewModel : ViewModel() {
                 getRechercheNomJeuVideo(nomRecherche)
             } else {
 
-                val nouveauJeuVideo = repository.getJeuxVideos(page = pageActuelle)
+                val nouveauJeuVideo = repository.getJeuxVideosLesMieuxNotes(page = pageActuelle)
                 jeuvideo.value += nouveauJeuVideo
                 pageActuelle++
             }

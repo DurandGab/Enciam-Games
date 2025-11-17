@@ -55,9 +55,9 @@ val detailJeuVideo by viewModel.detailjeuvideo.collectAsState()
             ) {
                 Icon(
                     imageVector = Icons.Outlined.ThumbUp,
-                    contentDescription = "Rating Icon"
+                    contentDescription = "Icone de note"
                 )
-                Text(text = "Rating: ${jeu.metacritic} / 100")
+                Text(text = "Note Métacritic: ${jeu.metacritic} / 100")
             }
             OutlinedButton(onClick = { /* TODO: Ajouter aux favoris */ }) {
                 Text(text = "Ajouter aux favoris")

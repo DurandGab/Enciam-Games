@@ -37,12 +37,13 @@ class MonRepository {
     private val baseUrl = "https://api.rawg.io/api/"
     private val apiKey = "cf8fc9f536424dcf857db9a1fe89592c"
 
-    suspend fun getJeuxVideos(page: Int = 1, pageSize: Int = 20): List<JeuVideo> {
+    suspend fun getJeuxVideosLesMieuxNotes(page: Int = 1, pageSize: Int = 20): List<JeuVideo> {
         val response: RawgResponse = client.request("${baseUrl}games") {
             method = HttpMethod.Get
             parameter("key", apiKey)
             parameter("page", page)
             parameter("page_size", pageSize)
+            parameter("ordering", "-metacritic")
         }.body()
 
         return response.results
@@ -63,6 +64,7 @@ class MonRepository {
             parameter("key", apiKey)
             parameter("search", nom)
             parameter("page", page)
+            parameter("ordering", "-metacritic")
         }.body()
 
         return response.results

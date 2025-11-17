@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
             val viewModel = MainViewModel()
             val backStack = remember { mutableStateListOf<Any>(Destination1) }
             val currentTitle = when (backStack.last()) {
-                Destination1 -> "Bienvenue"
+                Destination1 -> "Enciams Games"
                 is Destination2 -> "Detail du jeu"
                 Destination3 -> "Favoris"
                 else -> ""
