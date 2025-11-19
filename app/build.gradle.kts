@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.plugin.serialization") version "2.2.21"
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -66,4 +67,10 @@ dependencies {
     implementation(libs.ktor.serialization)
     implementation("io.coil-kt:coil-compose:2.1.0")
     implementation("androidx.compose.ui:ui-text-google-fonts:1.9.3")
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+    implementation("com.squareup.moshi:moshi:1.15.1")
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.1")
 }

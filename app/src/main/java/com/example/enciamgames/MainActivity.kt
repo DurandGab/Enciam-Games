@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val viewModel = MainViewModel()
+            val viewModel = MainViewModel(application)
             val backStack = remember { mutableStateListOf<Any>(Destination1) }
             val currentTitle = when (backStack.last()) {
                 Destination1 -> "Enciams Games"

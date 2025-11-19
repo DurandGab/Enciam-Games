@@ -1,19 +1,23 @@
 package com.example.enciamgames
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.enciamgames.Repository.MonRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlin.String
 import kotlin.collections.listOf
 
-class MainViewModel : ViewModel() {
-    private val repository = MonRepository()
-
+class MainViewModel(application: Application) : AndroidViewModel(application) {
+    private val repository = MonRepository(
+        application
+    )
     val jeuvideo = MutableStateFlow<List<JeuVideo>>(listOf())
     val detailjeuvideo = MutableStateFlow<DetailJeuVideo?>(null)
     val recherchenomjeuvideo = MutableStateFlow("")
+    val favoris = MutableStateFlow<List<JeuVideoFavori>>(listOf())
     val chargementPage = MutableStateFlow(false)
-
     private var pageActuelle = 1
     private var rechercheEnCours: String? = null
 
@@ -64,7 +68,6 @@ class MainViewModel : ViewModel() {
             chargementPage.value = false
         }
     }
-
     fun resetRecherche() {
         rechercheEnCours = null
         pageActuelle = 1
@@ -77,4 +80,24 @@ class MainViewModel : ViewModel() {
             detailjeuvideo.value = repository.getDetailJeuVideo(id)
         }
     }
+
+    fun chargerFavoris() {
+        viewModelScope.launch {
+            favoris.value = repository.getJeuxVideosFavoris()
+        }
+    }
+
+    fun ajouterFavori(jeu: JeuVideoFavori) {
+        viewModelScope.launch {
+            repository.ajouterJeuVideoFavori(jeu)
+            chargerFavoris()
+        }
+    }
+    fun supprimerFavori(id: Int) {
+        viewModelScope.launch {
+            repository.supprimerJeuVideoFavori(id)
+            chargerFavoris()
+        }
+    }
+
 }

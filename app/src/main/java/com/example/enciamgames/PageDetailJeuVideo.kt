@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material.icons.outlined.Warning
@@ -23,47 +24,81 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 
 fun fromHtml(html: String): AnnotatedString {
     val spanned: Spanned = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
     return AnnotatedString(spanned.toString())
 }
 @Composable
-fun PageDetailJeuVideo(backStack: MutableList<Any>, id: Int, viewModel: MainViewModel) {
-val detailJeuVideo by viewModel.detailjeuvideo.collectAsState()
+fun PageDetailJeuVideo(
+    backStack: MutableList<Any>,
+    id: Int,
+    viewModel: MainViewModel
+) {
+    val detailJeuVideo by viewModel.detailjeuvideo.collectAsState()
 
     LaunchedEffect(id) {
         viewModel.getDetailJeuVideo(id)
     }
-    val jeu = detailJeuVideo?: return
-    Box(modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center){
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Text(text = jeu.name, fontSize = 24.sp)
+
+    val jeu = detailJeuVideo ?: return
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        item {
+            Text(
+                text = jeu.name,
+                fontSize = 26.sp
+            )
+        }
+
+        item {
+            jeu.background_image?.let { imageUrl ->
+                AsyncImage(
+                    model = imageUrl,
+                    contentDescription = jeu.name,
+                    modifier = Modifier
+                        .height(220.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
+        }
+
+        item {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Icon(
                     imageVector = Icons.Outlined.ThumbUp,
-                    contentDescription = "Icone de note"
+                    contentDescription = "Icône de note"
                 )
-                Text(text = "Note Métacritic: ${jeu.metacritic} / 100")
+                Text(text = "Note Metacritic : ${jeu.metacritic} / 100")
             }
+        }
+
+        item {
             OutlinedButton(onClick = { /* TODO: Ajouter aux favoris */ }) {
                 Text(text = "Ajouter aux favoris")
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = fromHtml(jeu.description ?: "Pas de description disponible."))
+        }
+
+        item {
+            Text(
+                text = fromHtml(jeu.description ?: "Pas de description disponible."),
+                fontSize = 14.sp
+            )
         }
     }
 }

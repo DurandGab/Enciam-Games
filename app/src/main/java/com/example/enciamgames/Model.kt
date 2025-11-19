@@ -1,5 +1,7 @@
 package com.example.enciamgames
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 
@@ -94,3 +96,13 @@ data class Requirements(
     val recommended: String? = null
 )
 
+@Entity
+data class JeuVideoFavori(
+    @PrimaryKey val id: Int,
+    val name: String,
+    val background_image: String? = null,
+    val metacritic: Int? = null,
+    val released: String? = null
+) {
+
+}
