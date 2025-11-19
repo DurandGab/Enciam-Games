@@ -7,6 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,13 +52,20 @@ class MainActivity : ComponentActivity() {
                     topBar = {
                         TopAppBar(
                             title = { Text(currentTitle) },
+
                             navigationIcon = {
-                                IconButton(onClick = { backStack.removeLastOrNull() }) {
-                                    Icon(Icons.Default.Menu, contentDescription = "Menu")
+                                if (backStack.size > 1) {   // 👉 Bouton retour seulement si on n’est pas à l’accueil
+                                    IconButton(onClick = { backStack.removeLastOrNull() }) {
+                                        Icon(
+                                            Icons.Default.ArrowBack,
+                                            contentDescription = "Retour"
+                                        )
+                                    }
                                 }
                             },
+
                             actions = {
-                                IconButton(onClick = { /*TODO*/ }) {
+                                IconButton(onClick = { backStack.add(Destination3) }) {
                                     Icon(
                                         Icons.Default.FavoriteBorder,
                                         contentDescription = "Favorite"
@@ -77,7 +86,7 @@ class MainActivity : ComponentActivity() {
                             entry<Destination2> { dest ->
                                 PageDetailJeuVideo(backStack, dest.id, viewModel)
                             }
-                            entry<Destination3> { PageFavoriJeuVideo(backStack) }
+                            entry<Destination3> { PageFavoriJeuVideo(backStack, viewModel) }
                         }
                     )
                 }

@@ -10,12 +10,12 @@ import com.example.enciamgames.JeuVideoFavori
 @Dao
 interface JeuxVideosFavoriDao {
     @Query("SELECT * FROM JeuVideoFavori")
-    fun getFavoris(): List<JeuVideoFavori>
+    suspend fun getFavoris(): List<JeuVideoFavori>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun ajouterFavori(jeuVideo: JeuVideoFavori)
+    suspend fun ajouterFavori(jeuVideo: JeuVideoFavori)
 
     @Query("DELETE FROM JeuVideoFavori WHERE id = :id")
-    fun supprimerFavoriById(id: Int)
+    suspend fun supprimerFavoriById(id: Int)
 
 }

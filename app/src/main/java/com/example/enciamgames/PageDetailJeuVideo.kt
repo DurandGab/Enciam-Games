@@ -34,6 +34,7 @@ fun fromHtml(html: String): AnnotatedString {
     val spanned: Spanned = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
     return AnnotatedString(spanned.toString())
 }
+
 @Composable
 fun PageDetailJeuVideo(
     backStack: MutableList<Any>,
@@ -41,6 +42,8 @@ fun PageDetailJeuVideo(
     viewModel: MainViewModel
 ) {
     val detailJeuVideo by viewModel.detailjeuvideo.collectAsState()
+    val favori by viewModel.favoris.collectAsState()
+    val estFavori = favori.any { it.id == id }
 
     LaunchedEffect(id) {
         viewModel.getDetailJeuVideo(id)
@@ -87,10 +90,17 @@ fun PageDetailJeuVideo(
                 Text(text = "Note Metacritic : ${jeu.metacritic} / 100")
             }
         }
-
-        item {
-            OutlinedButton(onClick = { /* TODO: Ajouter aux favoris */ }) {
-                Text(text = "Ajouter aux favoris")
+        if (estFavori) {
+            item {
+                OutlinedButton(onClick = { viewModel.supprimerFavori(jeu.id) }) {
+                    Text(text = "Retirer des favoris")
+                }
+            }
+        } else {
+            item {
+                OutlinedButton(onClick = { viewModel.ajouterFavori(jeu.id) }) {
+                    Text(text = "Ajouter aux favoris")
+                }
             }
         }
 

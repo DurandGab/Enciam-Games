@@ -17,9 +17,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val detailjeuvideo = MutableStateFlow<DetailJeuVideo?>(null)
     val recherchenomjeuvideo = MutableStateFlow("")
     val favoris = MutableStateFlow<List<JeuVideoFavori>>(listOf())
+
     val chargementPage = MutableStateFlow(false)
     private var pageActuelle = 1
     private var rechercheEnCours: String? = null
+
+    init {
+        chargerFavoris()
+    }
 
     fun getJeuxVideos() {
         viewModelScope.launch {
@@ -68,6 +73,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             chargementPage.value = false
         }
     }
+
     fun resetRecherche() {
         rechercheEnCours = null
         pageActuelle = 1
@@ -84,15 +90,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun chargerFavoris() {
         viewModelScope.launch {
             favoris.value = repository.getJeuxVideosFavoris()
+
         }
     }
 
-    fun ajouterFavori(jeu: JeuVideoFavori) {
-        viewModelScope.launch {
-            repository.ajouterJeuVideoFavori(jeu)
-            chargerFavoris()
+    fun ajouterFavori(id: Int) {
+        jeuvideo.value.find { it.id == id }?.let {
+            viewModelScope.launch {
+                repository.ajouterJeuVideoFavori(it)
+                chargerFavoris()
+            }
         }
     }
+
     fun supprimerFavori(id: Int) {
         viewModelScope.launch {
             repository.supprimerJeuVideoFavori(id)

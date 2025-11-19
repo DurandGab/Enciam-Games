@@ -2,6 +2,7 @@ package com.example.enciamgames
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.squareup.moshi.JsonClass
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 
@@ -12,28 +13,14 @@ data class RawgResponse(
     val previous: String? = null,
     val results: List<JeuVideo>
 )
-
+@JsonClass(generateAdapter = true)
 @Serializable
 data class JeuVideo(
     val id: Int,
-    val slug: String,
     val name: String,
     val released: String? = null,
-    val tba: Boolean,
     val background_image: String? = null,
-    val rating: Double,
-    val rating_top: Int,
-    val ratings: JsonElement? = null,
-    val ratings_count: Int,
-    val reviews_text_count: Int? = null,
-    val added: Int,
-    val added_by_status: JsonElement? = null,
     val metacritic: Int? = null,
-    val playtime: Int,
-    val suggestions_count: Int,
-    val updated: String,
-    val esrb_rating: EsrbRating? = null,
-    val platforms: List<PlatformInfo>? = null
 )
 
 @Serializable
@@ -65,44 +52,12 @@ data class DetailJeuVideo(
     val parents_count: Int,
     val additions_count: Int,
     val game_series_count: Int,
-    val esrb_rating: EsrbRating? = null,
-    val platforms: List<PlatformInfo>? = null
-)
-
-@Serializable
-data class EsrbRating(
-    val id: Int,
-    val slug: String,
-    val name: String
-)
-
-@Serializable
-data class PlatformInfo(
-    val platform: Platform,
-    val released_at: String? = null,
-    val requirements: Requirements? = null
-)
-
-@Serializable
-data class Platform(
-    val id: Int,
-    val slug: String,
-    val name: String
-)
-
-@Serializable
-data class Requirements(
-    val minimum: String? = null,
-    val recommended: String? = null
 )
 
 @Entity
 data class JeuVideoFavori(
+    val jeu: JeuVideo,
     @PrimaryKey val id: Int,
-    val name: String,
-    val background_image: String? = null,
-    val metacritic: Int? = null,
-    val released: String? = null
 ) {
 
 }

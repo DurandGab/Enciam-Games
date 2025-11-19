@@ -2,8 +2,6 @@ package com.example.enciamgames.Repository
 
 import android.app.Application
 import android.util.Log
-import androidx.room.Dao
-import androidx.room.Query
 import androidx.room.Room
 import com.example.enciamgames.DetailJeuVideo
 import com.example.enciamgames.JeuVideo
@@ -44,8 +42,10 @@ class MonRepository (application: Application){
         }
     }
 
-    val database = Room.databaseBuilder( application, AppDatabase::class.java, "database-name" )
-        .fallbackToDestructiveMigration(false)
+    val database = Room.databaseBuilder(
+        application,
+        AppDatabase::class.java,
+        "database-name")
         .addTypeConverter(Converters(Moshi.Builder().build()))
         .build()
     val dao = database.jeuxVideoFavoriDao()
@@ -86,17 +86,17 @@ class MonRepository (application: Application){
         return response.results
     }
 
-    fun getJeuxVideosFavoris(): List<JeuVideoFavori>{
+    suspend fun getJeuxVideosFavoris(): List<JeuVideoFavori>{
         val favori = dao.getFavoris()
         return favori
     }
 
-    fun ajouterJeuVideoFavori(jeuvideo: JeuVideoFavori){
-        val jeuxvideofavori = JeuVideoFavori(id = jeuvideo.id, name = jeuvideo.name, released = jeuvideo.released, background_image = jeuvideo.background_image, metacritic = jeuvideo.metacritic)
+    suspend fun ajouterJeuVideoFavori(jeuvideo: JeuVideo){
+        val jeuxvideofavori = JeuVideoFavori(jeu = jeuvideo, id = jeuvideo.id)
         return dao.ajouterFavori(jeuxvideofavori)
     }
 
-    fun supprimerJeuVideoFavori(id: Int){
+    suspend fun supprimerJeuVideoFavori(id: Int){
         dao.supprimerFavoriById(id)
     }
 }

@@ -4,18 +4,24 @@ import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import com.example.enciamgames.JeuVideo
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 
 @ProvidedTypeConverter
 class Converters(moshi: Moshi) {
-    private val jeuxVideoAdapter = moshi.adapter(List::class.java)
+    private val listType = Types.newParameterizedType(
+        List::class.java,
+        JeuVideo::class.java
+    )
+
+    private val jeuxVideoAdapter = moshi.adapter(JeuVideo::class.java)
 
     @TypeConverter
-    fun StringToJeuxVideoList(value: String?): List<JeuVideo>? {
-        return jeuxVideoAdapter.fromJson(value.orEmpty()) as List<JeuVideo>?
-    }
-    @TypeConverter
-    fun JeuxVideoListToString(jeuxvideo: List<JeuVideo>?): String? {
-        return jeuxVideoAdapter.toJson(jeuxvideo)
+    fun fromString(value: String?): JeuVideo? {
+       return jeuxVideoAdapter.fromJson(value)
     }
 
+    @TypeConverter
+    fun toString(jeu: JeuVideo): String {
+        return jeuxVideoAdapter.toJson(jeu)
+    }
 }

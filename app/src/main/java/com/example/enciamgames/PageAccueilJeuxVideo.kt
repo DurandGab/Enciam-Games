@@ -1,6 +1,5 @@
 package com.example.enciamgames
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -47,6 +45,7 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
     val jeux by viewModel.jeuvideo.collectAsState()
     val chargementpage by viewModel.chargementPage.collectAsState()
     val recherchenomjeuvideo by viewModel.recherchenomjeuvideo.collectAsState()
+    val favori by viewModel.favoris.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getJeuxVideos()
@@ -92,6 +91,7 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
         }
 
         items(jeux) { jeu ->
+            val estFavori = favori.any { it.id == jeu.id }
             Card(
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier
@@ -113,6 +113,19 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                             .fillMaxSize()
                             .background(Color(0x80000000))
                     )
+                    if(estFavori){
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = "Favori",
+                            tint = Color.Yellow,
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(12.dp)
+                                .clickable{
+                                    viewModel.supprimerFavori(jeu.id)
+                                }
+                        )
+                    }else{
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = "Favori",
@@ -121,9 +134,9 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                             .align(Alignment.TopEnd)
                             .padding(12.dp)
                             .clickable {
-
+                                viewModel.ajouterFavori(jeu.id)
                             }
-                    )
+                    )}
                     Column(
                         modifier = Modifier
                             .align(Alignment.BottomStart)
