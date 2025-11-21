@@ -1,6 +1,7 @@
 package com.example.enciamgames
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.enciamgames.Repository.MonRepository
@@ -95,11 +96,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun ajouterFavori(id: Int) {
+
+        Log.v("MainViewModel", "Tentative d'ajout du favori avec l'ID: ${jeuvideo.value.size}")
         jeuvideo.value.find { it.id == id }?.let {
+            Log.v("MainViewModel", "Ajout du favori: ${it.name}")
             viewModelScope.launch {
                 repository.ajouterJeuVideoFavori(it)
                 chargerFavoris()
             }
+
         }
     }
 

@@ -1,5 +1,7 @@
 package com.example.enciamgames
 
+import android.R.color.white
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -32,13 +35,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.enciamgames.ui.theme.haloFont
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) {
@@ -46,6 +53,10 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
     val chargementpage by viewModel.chargementPage.collectAsState()
     val recherchenomjeuvideo by viewModel.recherchenomjeuvideo.collectAsState()
     val favori by viewModel.favoris.collectAsState()
+
+    val dateFormatApi = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val dateFormatDisplay = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
 
     LaunchedEffect(Unit) {
         viewModel.getJeuxVideos()
@@ -63,7 +74,8 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(Color.White)
+                    .width(500.dp)
             ) {
                 TextField(
                     value = recherchenomjeuvideo,
@@ -107,7 +119,15 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
                         )
-                    }
+                    }?: Image(
+                        painter = painterResource(id = R.drawable.jeuxvideopardefaut),
+                        contentDescription = "Image de placeholder",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(220.dp)
+                            .clip(RoundedCornerShape(20.dp)),
+                        contentScale = ContentScale.Crop
+                    )
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -117,7 +137,7 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                         Icon(
                             imageVector = Icons.Default.Favorite,
                             contentDescription = "Favori",
-                            tint = Color.Yellow,
+                            tint = Color.Red,
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
                                 .padding(12.dp)
@@ -126,17 +146,17 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                                 }
                         )
                     }else{
-                    Icon(
-                        imageVector = Icons.Default.Favorite,
-                        contentDescription = "Favori",
-                        tint = Color.Red,
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(12.dp)
-                            .clickable {
-                                viewModel.ajouterFavori(jeu.id)
-                            }
-                    )}
+                        Icon(
+                            imageVector = Icons.Default.FavoriteBorder,
+                            contentDescription = "Favori",
+                            tint = Color.Red,
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(12.dp)
+                                .clickable {
+                                    viewModel.ajouterFavori(jeu.id)
+                                }
+                        )}
                     Column(
                         modifier = Modifier
                             .align(Alignment.BottomStart)
@@ -156,8 +176,17 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium
                         )
+                        val dateSortie = jeu.released?.let {
+                            try {
+                                val parsedDate = dateFormatApi.parse(it)
+                                parsedDate?.let { date -> dateFormatDisplay.format(date) } ?: "Non renseignée"
+                            } catch (e: Exception) {
+                                "Non renseignée"
+                            }
+                        } ?: "Non renseignée"
+
                         Text(
-                            text = "Sortie : ${jeu.released ?: "Non renseignée"}",
+                            text = "Sortie : $dateSortie",
                             color = Color.White.copy(alpha = 0.85f),
                             fontSize = 12.sp
                         )

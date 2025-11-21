@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -39,7 +40,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val viewModel = MainViewModel(application)
+            val viewModel: MainViewModel by viewModels()
             val backStack = remember { mutableStateListOf<Any>(Destination1) }
             val currentTitle = when (backStack.last()) {
                 Destination1 -> "Enciams Games"
@@ -54,7 +55,7 @@ class MainActivity : ComponentActivity() {
                             title = { Text(currentTitle) },
 
                             navigationIcon = {
-                                if (backStack.size > 1) {   // 👉 Bouton retour seulement si on n’est pas à l’accueil
+                                if (backStack.size > 1) {
                                     IconButton(onClick = { backStack.removeLastOrNull() }) {
                                         Icon(
                                             Icons.Default.ArrowBack,

@@ -1,5 +1,6 @@
 package com.example.enciamgames
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,17 +29,25 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.enciamgames.ui.theme.haloFont
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun PageFavoriJeuVideo(backStack: MutableList<Any>, viewModel: MainViewModel) {
     val favoris by viewModel.favoris.collectAsState()
+
+    val dateFormatApi = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val dateFormatDisplay = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -61,7 +70,15 @@ fun PageFavoriJeuVideo(backStack: MutableList<Any>, viewModel: MainViewModel) {
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
                         )
-                    }
+                    }?: Image(
+                        painter = painterResource(id = R.drawable.jeuxvideopardefaut),
+                        contentDescription = "Image de placeholder",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(220.dp)
+                            .clip(RoundedCornerShape(20.dp)),
+                        contentScale = ContentScale.Crop
+                    )
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -86,8 +103,17 @@ fun PageFavoriJeuVideo(backStack: MutableList<Any>, viewModel: MainViewModel) {
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium
                         )
+                        val dateSortie = favori.jeu.released?.let {
+                            try {
+                                val parsedDate = dateFormatApi.parse(it)
+                                parsedDate?.let { date -> dateFormatDisplay.format(date) } ?: "Non renseignée"
+                            } catch (e: Exception) {
+                                "Non renseignée"
+                            }
+                        } ?: "Non renseignée"
+
                         Text(
-                            text = "Sortie : ${favori.jeu.released ?: "Non renseignée"}",
+                            text = "Sortie : $dateSortie",
                             color = Color.White.copy(alpha = 0.85f),
                             fontSize = 12.sp
                         )
