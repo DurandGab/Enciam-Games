@@ -1,6 +1,5 @@
-package com.example.enciamgames
+package com.example.enciamgames.Pages
 
-import android.R.color.white
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +26,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -43,6 +43,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.enciamgames.Destination2
+import com.example.enciamgames.MainViewModel
+import com.example.enciamgames.R
 import com.example.enciamgames.ui.theme.haloFont
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -53,6 +56,7 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
     val chargementpage by viewModel.chargementPage.collectAsState()
     val recherchenomjeuvideo by viewModel.recherchenomjeuvideo.collectAsState()
     val favori by viewModel.favoris.collectAsState()
+    val tri by viewModel.tri
 
     val dateFormatApi = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val dateFormatDisplay = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -95,14 +99,77 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                     },
                 ) {
                     Icon(
-                        imageVector = androidx.compose.material.icons.Icons.Default.Search,
+                        imageVector = Icons.Default.Search,
                         contentDescription = "Icône de recherche"
                     )
                 }
             }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable { viewModel.tri.value = "playtime" }
+                ) {
+                    RadioButton(
+                        selected = tri == "playtime",
+                        onClick = { viewModel.tri.value = "playtime" }
+                    )
+                    Text("Les plus joués")
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable { viewModel.tri.value = "metacritic" }
+                ) {
+                    RadioButton(
+                        selected = tri == "metacritic",
+                        onClick = { viewModel.tri.value = "metacritic" }
+                    )
+                    Text("Les mieux notés")
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .padding(vertical = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable { viewModel.tri.value = "released" }
+                ) {
+                    RadioButton(
+                        selected = tri == "released",
+                        onClick = { viewModel.tri.value = "released" }
+                    )
+                    Text("Dernières sorties")
+                }
+            }
+        }
+        val jeuxTries = when (tri) {
+            "playtime" -> jeux.sortedByDescending { it.playtime ?: 0 }
+            "metacritic" -> jeux.sortedByDescending { it.metacritic ?: 0 }
+            "released" -> jeux.sortedByDescending { jeu ->
+                // Conversion en timestamp
+                jeu.released?.let { dateStr ->
+                    try {
+                        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(dateStr)?.time
+                    } catch (e: Exception) {
+                        null
+                    }
+                } ?: 0L
+            }
+
+            else -> jeux
         }
 
-        items(jeux) { jeu ->
+        items(jeuxTries) { jeu ->
             val estFavori = favori.any { it.id == jeu.id }
             Card(
                 shape = RoundedCornerShape(16.dp),
@@ -119,7 +186,7 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
                         )
-                    }?: Image(
+                    } ?: Image(
                         painter = painterResource(id = R.drawable.jeuxvideopardefaut),
                         contentDescription = "Image de placeholder",
                         modifier = Modifier
@@ -133,7 +200,7 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                             .fillMaxSize()
                             .background(Color(0x80000000))
                     )
-                    if(estFavori){
+                    if (estFavori) {
                         Icon(
                             imageVector = Icons.Default.Favorite,
                             contentDescription = "Favori",
@@ -141,11 +208,11 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
                                 .padding(12.dp)
-                                .clickable{
+                                .clickable {
                                     viewModel.supprimerFavori(jeu.id)
                                 }
                         )
-                    }else{
+                    } else {
                         Icon(
                             imageVector = Icons.Default.FavoriteBorder,
                             contentDescription = "Favori",
@@ -156,7 +223,8 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                                 .clickable {
                                     viewModel.ajouterFavori(jeu.id)
                                 }
-                        )}
+                        )
+                    }
                     Column(
                         modifier = Modifier
                             .align(Alignment.BottomStart)
@@ -179,7 +247,8 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                         val dateSortie = jeu.released?.let {
                             try {
                                 val parsedDate = dateFormatApi.parse(it)
-                                parsedDate?.let { date -> dateFormatDisplay.format(date) } ?: "Non renseignée"
+                                parsedDate?.let { date -> dateFormatDisplay.format(date) }
+                                    ?: "Non renseignée"
                             } catch (e: Exception) {
                                 "Non renseignée"
                             }
@@ -189,6 +258,11 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                             text = "Sortie : $dateSortie",
                             color = Color.White.copy(alpha = 0.85f),
                             fontSize = 12.sp
+                        )
+                        Text(
+                            text = "Heures jouées par les utilisateurs : ${jeu.playtime ?: "N/A"} h",
+                            color = Color.White.copy(alpha = 0.75f),
+                            fontSize = 10.sp,
                         )
                     }
                 }
@@ -205,7 +279,7 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                 ) {
                     Text("Chargement...", style = MaterialTheme.typography.bodyMedium)
                 }
-            }else{
+            } else {
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedButton(
                     onClick = {

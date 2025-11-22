@@ -53,7 +53,7 @@ class MonRepository (application: Application){
     private val baseUrl = "https://api.rawg.io/api/"
     private val apiKey = "da4ae3be44204cae9a284d7a5373bc83"
 
-    suspend fun getJeuxVideosLesMieuxNotes(page: Int = 1, pageSize: Int = 20): List<JeuVideo> {
+    suspend fun getJeuxVideosLesMieuxNotes(page: Int = 1, pageSize: Int = 100): List<JeuVideo> {
         val response: RawgResponse = client.request("${baseUrl}games") {
             method = HttpMethod.Get
             parameter("key", apiKey)
@@ -64,6 +64,18 @@ class MonRepository (application: Application){
 
         return response.results
     }
+
+    /*suspend fun getJeuxVideosLesPlusJoues(page: Int = 1, pageSize: Int = 20): List<JeuVideo> {
+        val response: RawgResponse = client.request("${baseUrl}games") {
+            method = HttpMethod.Get
+            parameter("key", apiKey)
+            parameter("page", page)
+            parameter("page_size", pageSize)
+            parameter("ordering", "-playtime")
+        }.body()
+
+        return response.results
+    }*/
 
     suspend fun getDetailJeuVideo(id: Int): DetailJeuVideo {
         val response: DetailJeuVideo = client.request("${baseUrl}games/$id") {
@@ -98,5 +110,10 @@ class MonRepository (application: Application){
 
     suspend fun supprimerJeuVideoFavori(id: Int){
         dao.supprimerFavoriById(id)
+    }
+
+    suspend fun rechercherJeuVideoFavoriNom(nom: String): List<JeuVideoFavori>{
+        val favoris = dao.getFavoris()
+        return favoris.filter { it.jeu.name.contains(nom, ignoreCase = true) }
     }
 }

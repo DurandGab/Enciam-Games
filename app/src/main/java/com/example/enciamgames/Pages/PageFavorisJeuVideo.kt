@@ -1,4 +1,4 @@
-package com.example.enciamgames
+package com.example.enciamgames.Pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,18 +12,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -37,6 +37,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.enciamgames.Destination2
+import com.example.enciamgames.MainViewModel
+import com.example.enciamgames.R
 import com.example.enciamgames.ui.theme.haloFont
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -44,6 +47,7 @@ import java.util.Locale
 @Composable
 fun PageFavoriJeuVideo(backStack: MutableList<Any>, viewModel: MainViewModel) {
     val favoris by viewModel.favoris.collectAsState()
+    val recherchenomjeuvideofavori by viewModel.recherchenomjeuvideofavori.collectAsState()
 
     val dateFormatApi = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val dateFormatDisplay = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -54,6 +58,39 @@ fun PageFavoriJeuVideo(backStack: MutableList<Any>, viewModel: MainViewModel) {
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        stickyHeader {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .width(500.dp)
+            ) {
+                TextField(
+                    value = recherchenomjeuvideofavori,
+                    onValueChange = { newValue ->
+                        viewModel.recherchenomjeuvideofavori.value = newValue
+                        if (newValue.isEmpty()) {
+                            viewModel.resetRechercheFavori()
+                        }
+                    },
+                    label = { Text("Rechercher un jeu vidéo en favori") },
+                    modifier = Modifier.width(250.dp),
+                    singleLine = true
+                )
+                Button(
+                    onClick = {
+                        viewModel.rechercherFavoriParNom(recherchenomjeuvideofavori)
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Icône de recherche"
+                    )
+                }
+            }
+        }
         items(favoris) { favori ->
             Card(
                 shape = RoundedCornerShape(16.dp),
@@ -116,6 +153,11 @@ fun PageFavoriJeuVideo(backStack: MutableList<Any>, viewModel: MainViewModel) {
                             text = "Sortie : $dateSortie",
                             color = Color.White.copy(alpha = 0.85f),
                             fontSize = 12.sp
+                        )
+                        Text(
+                            text = "Heures jouées par les utilisateurs : ${favori.jeu.playtime ?: "N/A"} h",
+                            color = Color.White.copy(alpha = 0.75f),
+                            fontSize = 10.sp,
                         )
                     }
                 }

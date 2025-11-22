@@ -2,6 +2,7 @@ package com.example.enciamgames
 
 import android.app.Application
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.enciamgames.Repository.MonRepository
@@ -18,6 +19,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val detailjeuvideo = MutableStateFlow<DetailJeuVideo?>(null)
     val recherchenomjeuvideo = MutableStateFlow("")
     val favoris = MutableStateFlow<List<JeuVideoFavori>>(listOf())
+    val recherchenomjeuvideofavori = MutableStateFlow("")
+    val tri = mutableStateOf("none")
+
+
 
     val chargementPage = MutableStateFlow(false)
     private var pageActuelle = 1
@@ -33,20 +38,29 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             chargementPage.value = true
 
             val nomRecherche = rechercheEnCours ?: ""
-
             if (nomRecherche.isNotEmpty()) {
-
                 getRechercheNomJeuVideo(nomRecherche)
             } else {
-
                 val nouveauJeuVideo = repository.getJeuxVideosLesMieuxNotes(page = pageActuelle)
                 jeuvideo.value += nouveauJeuVideo
                 pageActuelle++
             }
-
             chargementPage.value = false
         }
     }
+
+    /*fun getJeuxLesPlusJoues() {
+        viewModelScope.launch {
+            if (chargementPage.value) return@launch
+            chargementPage.value = true
+
+            val nouveauJeuVideo = repository.getJeuxVideosLesPlusJoues(page = pageActuelle)
+            jeuvideo.value += nouveauJeuVideo
+            pageActuelle++
+
+            chargementPage.value = false
+        }
+    }*/
 
     fun getRechercheNomJeuVideo(nom: String) {
         viewModelScope.launch {
@@ -82,6 +96,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         getJeuxVideos()
     }
 
+    fun resetRechercheFavori() {
+        recherchenomjeuvideofavori.value = ""
+        chargerFavoris()
+    }
+
     fun getDetailJeuVideo(id: Int) {
         viewModelScope.launch {
             detailjeuvideo.value = repository.getDetailJeuVideo(id)
@@ -96,18 +115,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun ajouterFavori(id: Int) {
-
-        Log.v("MainViewModel", "Tentative d'ajout du favori avec l'ID: ${jeuvideo.value.size}")
         jeuvideo.value.find { it.id == id }?.let {
-            Log.v("MainViewModel", "Ajout du favori: ${it.name}")
             viewModelScope.launch {
                 repository.ajouterJeuVideoFavori(it)
                 chargerFavoris()
             }
-
         }
     }
-
     fun supprimerFavori(id: Int) {
         viewModelScope.launch {
             repository.supprimerJeuVideoFavori(id)
@@ -115,4 +129,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun rechercherFavoriParNom(nom: String) {
+        viewModelScope.launch {
+            val resultat = repository.rechercherJeuVideoFavoriNom(nom)
+                recherchenomjeuvideofavori.value = nom
+            favoris.value = resultat
+        }
+    }
 }

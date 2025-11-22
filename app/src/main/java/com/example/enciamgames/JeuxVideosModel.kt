@@ -4,7 +4,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.squareup.moshi.JsonClass
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonElement
 
 @Serializable
 data class RawgResponse(
@@ -21,6 +20,7 @@ data class JeuVideo(
     val released: String? = null,
     val background_image: String? = null,
     val metacritic: Int? = null,
+    val playtime: Int? = null,
 )
 
 @Serializable
@@ -31,6 +31,7 @@ data class DetailJeuVideo(
     val metacritic: Int? = null,
     val released: String? = null,
     val background_image: String? = null,
+    val playtime: Int? = null,
 )
 
 @Entity

@@ -17,5 +17,4 @@ interface JeuxVideosFavoriDao {
 
     @Query("DELETE FROM JeuVideoFavori WHERE id = :id")
     suspend fun supprimerFavoriById(id: Int)
-
 }

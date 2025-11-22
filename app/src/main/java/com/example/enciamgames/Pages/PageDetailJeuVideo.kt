@@ -1,4 +1,4 @@
-package com.example.enciamgames
+package com.example.enciamgames.Pages
 
 import android.text.Html
 import android.text.Spanned
@@ -9,14 +9,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
@@ -24,6 +26,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.enciamgames.MainViewModel
+import com.example.enciamgames.R
 import com.example.enciamgames.ui.theme.Purple40
 import com.example.enciamgames.ui.theme.haloFont
 import java.text.SimpleDateFormat
@@ -36,13 +40,13 @@ fun fromHtml(html: String): AnnotatedString {
 
 @Composable
 fun PageDetailJeuVideo(
-    backStack: MutableList<Any>,
     id: Int,
     viewModel: MainViewModel
 ) {
     val detailJeuVideo by viewModel.detailjeuvideo.collectAsState()
     val favoris by viewModel.favoris.collectAsState()
     val estFavori = favoris.any { it.id == id }
+
 
     val dateFormatApi = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val dateFormatDisplay = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -60,7 +64,6 @@ fun PageDetailJeuVideo(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         item {
             Text(
                 fontFamily = haloFont,
@@ -82,7 +85,7 @@ fun PageDetailJeuVideo(
                         .clip(RoundedCornerShape(20.dp)),
                     contentScale = ContentScale.Crop
                 )
-            }?: Image(
+            } ?: Image(
                 painter = painterResource(id = R.drawable.jeuxvideopardefaut),
                 contentDescription = "Image de placeholder",
                 modifier = Modifier
@@ -135,7 +138,8 @@ fun PageDetailJeuVideo(
                         val dateSortie = jeu.released?.let {
                             try {
                                 val parsedDate = dateFormatApi.parse(it)
-                                parsedDate?.let { date -> dateFormatDisplay.format(date) } ?: "Non renseignée"
+                                parsedDate?.let { date -> dateFormatDisplay.format(date) }
+                                    ?: "Non renseignée"
                             } catch (e: Exception) {
                                 "Non renseignée"
                             }
@@ -144,6 +148,21 @@ fun PageDetailJeuVideo(
                         Text(
                             text = "Sortie : $dateSortie",
                             fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.PlayArrow,
+                            contentDescription = "Date de sortie du jeu",
+                            tint = Color(0xFF2196F3)
+                        )
+                        Text(
+                            text = "Heures moyennes jouées par les utilisateurs de RAWG API : ${jeu.playtime ?: "N/A"} h",
+                            fontSize =12.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
