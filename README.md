@@ -66,4 +66,3 @@ Lors de l’action **« Ajouter le jeu »** :
 
 * 💾 Le jeu est enregistré dans la **Room Database**
 * 🔄 Il est ajouté automatiquement à la liste principale
-* ↩️ Redirection vers l’écran d’accueil
