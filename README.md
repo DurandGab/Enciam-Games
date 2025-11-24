@@ -1,74 +1,69 @@
-🎮 Enciam Games
+# 🎮 Enciam Games
 
-Application Android Kotlin utilisant l’API RAWG
+**Application Android Kotlin utilisant l’API RAWG**
 
-📌 Description
+---
 
-Enciam Games est une application mobile développée en Kotlin permettant de rechercher, filtrer et consulter des jeux vidéo grâce à l’API RAWG.
-Elle offre également la possibilité d’ajouter vos propres jeux à une base de données locale afin de compléter la liste récupérée en ligne.
+## 📌 Description
 
-✨ Fonctionnalités principales
-🏠 Écran d’accueil – Recherche & Liste des jeux
+**Enciam Games** est une application mobile développée en **Kotlin** permettant de :
 
-Affichage de la liste complète des jeux provenant de l’API RAWG.
+* 🔍 **Rechercher** des jeux vidéo
+* 🧹 **Filtrer** par popularité, note ou date
+* 📄 **Consulter** les détails complets d’un jeu
+* ❤️ **Ajouter ses propres jeux en favoris** via une base de données locale
 
-Barre de recherche permettant de filtrer par :
+L’application s’appuie sur l’API **RAWG** pour récupérer les données des jeux.
 
-Nom du jeu
+---
 
-Critères dynamiques :
+## ✨ Fonctionnalités principales
 
-Meilleures notes (basées sur Metacritic)
+### 🏠 Écran d’accueil – Recherche & Liste des jeux
 
-Jeux les plus joués
+* 📜 Affichage de la liste complète des jeux provenant de l’API RAWG
+* 🔎 Barre de recherche permettant de filtrer par **nom**
+* ⚙️ Filtres dynamiques :
 
-Date de sortie
+  * ⭐ Meilleures notes (Metacritic)
+  * 🔥 Les plus joués
+  * 📅 Date de sortie
+* 👉 Un clic sur un jeu ouvre sa fiche détaillée
 
-Sélection d’un jeu pour accéder à l’écran de détails.
+---
 
-📄 Écran de détails du jeu
+### 📄 Écran de détails du jeu
 
-Affiche toutes les informations disponibles sur le jeu sélectionné :
+Informations affichées :
 
-Image de couverture
+* 🖼️ Image de couverture
+* 🎮 Nom
+* 📝 Description
+* 📅 Date de sortie
+* ⭐ Note
+* 👥 Nombre de joueurs
 
-Nom du jeu
+➡️ Toutes les données proviennent directement de l’API RAWG.
 
-Description
+---
 
-Date de sortie
-
-Note
-
-Nombre de joueurs
-Les données sont récupérées en temps réel via l’API RAWG.
-
-❤️ Écran des favoris (base locale)
+### ❤️ Écran des favoris (base locale)
 
 Accessible depuis :
 
-Le bouton « cœur » sur l’écran principal
+* Le bouton **❤️** sur l’écran principal
+* La fiche d’un jeu
 
-La fiche d’un jeu vidéo
+Informations affichées pour chaque jeu favori :
 
-Fonctionnalités :
+* 🎮 Nom
+* 📅 Date de sortie
+* 🖼️ Image
+* ⭐ Note
+* 👥 Nombre de joueurs
 
-Affichage complet des jeux ajoutés en favoris avec :
+Lors de l’action **« Ajouter le jeu »** :
 
-Nom
-
-Date de sortie
-
-Image
-
-Note
-
-Nombre de joueurs
-
-Lors de l’ajout d’un jeu (« Ajouter le jeu ») :
-
-Le jeu est enregistré dans la base de données locale (Room Database)
-
-Il est ajouté dynamiquement à la liste principale
-
-Redirection automatique vers l’écran d’accueil
+* 💾 Le jeu est enregistré dans la **Room Database**
+* 🔄 Il est ajouté automatiquement à la liste principale
+* ↩️ Redirection vers l’écran d’accueil
