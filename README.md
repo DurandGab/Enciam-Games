@@ -15,7 +15,6 @@ Filtres dynamiques :
 - Les jeux les mieux notés (sous la référence de MetaCritics)
 - Les plus joués
 - Date de sortie
-- Genre
 
 En cliquant sur un jeu, redirection vers l’écran de détails.
 
@@ -23,19 +22,18 @@ En cliquant sur un jeu, redirection vers l’écran de détails.
 Affiche toutes les informations détaillées sur le jeu sélectionné :
 - Image de couverture
 - Nom, description, date de sortie
-- Note, genre, plateforme, éditeur
-- Nombre de joueurs, image du jeu
+- Note, nombre de joueurs
 
 Les données sont directement extraites depuis l’API RAWG.
 
-3. Écran d’ajout de jeu (base locale)
-Accessible depuis un bouton "Ajouter votre jeu vidéo" sur l’écran principal.
-Formulaire pour créer un jeu personnalisé avec les champs suivants :
+3. Écran de favoris (base locale)
+Accessible depuis un bouton avec un icone "coeur" sur l’écran principal ou depuis un jeu vidéo.
+Affiche la liste complète des jeux ajoutés en favoris avec comme information : 
 - Nom du jeu
-- Genre
 - Date de sortie
-- Description
 - Image du jeu
+- Note
+- Nombre de joueurs
 
 En validant (“Ajouter le jeu”), le jeu est :
 - Enregistré dans une base de données locale (Room Database).
