@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,15 +19,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -43,7 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.enciamgames.Destination2
+import com.example.enciamgames.Activity.Destination2
 import com.example.enciamgames.MainViewModel
 import com.example.enciamgames.R
 import com.example.enciamgames.ui.theme.haloFont
@@ -54,15 +53,14 @@ import java.util.Locale
 fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) {
     val jeux by viewModel.jeuvideo.collectAsState()
     val chargementpage by viewModel.chargementPage.collectAsState()
-    val recherchenomjeuvideo by viewModel.recherchenomjeuvideo.collectAsState()
     val favori by viewModel.favoris.collectAsState()
     val tri by viewModel.tri
 
     val dateFormatApi = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val dateFormatDisplay = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
-
     LaunchedEffect(Unit) {
+        viewModel.recherchenomjeuvideo.value = ""
         viewModel.getJeuxVideos()
     }
 
@@ -73,90 +71,12 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         stickyHeader {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White)
-                    .width(500.dp)
-            ) {
-                TextField(
-                    value = recherchenomjeuvideo,
-                    onValueChange = { newValue ->
-                        viewModel.recherchenomjeuvideo.value = newValue
-                        if (newValue.isEmpty()) {
-                            viewModel.resetRecherche()
-                        }
-                    },
-                    label = { Text("Rechercher un jeu vidéo") },
-                    modifier = Modifier.width(250.dp),
-                    singleLine = true
-                )
-                Button(
-                    onClick = {
-                        viewModel.getRechercheNomJeuVideo(recherchenomjeuvideo)
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Icône de recherche"
-                    )
-                }
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White)
-                    .padding(vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable { viewModel.tri.value = "playtime" }
-                ) {
-                    RadioButton(
-                        selected = tri == "playtime",
-                        onClick = { viewModel.tri.value = "playtime" }
-                    )
-                    Text("Les plus joués")
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable { viewModel.tri.value = "metacritic" }
-                ) {
-                    RadioButton(
-                        selected = tri == "metacritic",
-                        onClick = { viewModel.tri.value = "metacritic" }
-                    )
-                    Text("Les mieux notés")
-                }
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White)
-                    .padding(vertical = 8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable { viewModel.tri.value = "released" }
-                ) {
-                    RadioButton(
-                        selected = tri == "released",
-                        onClick = { viewModel.tri.value = "released" }
-                    )
-                    Text("Dernières sorties")
-                }
-            }
+            BarreDeRecherche(viewModel = viewModel)
         }
         val jeuxTries = when (tri) {
             "playtime" -> jeux.sortedByDescending { it.playtime ?: 0 }
             "metacritic" -> jeux.sortedByDescending { it.metacritic ?: 0 }
             "released" -> jeux.sortedByDescending { jeu ->
-                // Conversion en timestamp
                 jeu.released?.let { dateStr ->
                     try {
                         SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(dateStr)?.time
@@ -268,7 +188,6 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                 }
             }
         }
-
         item {
             if (chargementpage) {
                 Box(
@@ -288,6 +207,106 @@ fun PageAccueilJeuxVideo(backStack: MutableList<Any>, viewModel: MainViewModel) 
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Charger plus de jeux")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun BarreDeRecherche(viewModel: MainViewModel) {
+    val recherchenomjeuvideo by viewModel.recherchenomjeuvideo.collectAsState()
+    val tri by viewModel.tri
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+    ) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            OutlinedTextField(
+                value = recherchenomjeuvideo,
+                onValueChange = { newValue ->
+                    viewModel.recherchenomjeuvideo.value = newValue
+                    if (newValue.isEmpty()) viewModel.resetRecherche()
+                },
+                label = { Text("Rechercher un jeu vidéo") },
+                trailingIcon = {
+                    IconButton(
+                        onClick = {
+                            viewModel.getRechercheNomJeuVideo(recherchenomjeuvideo)
+                        }
+                    ) {
+                        Icon(Icons.Default.Search, contentDescription = "Rechercher")
+                    }
+                },
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                "Trier par",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.Start
+            ) {
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { viewModel.tri.value = "playtime" }
+                        .padding(vertical = 6.dp)
+                ) {
+                    RadioButton(
+                        selected = tri == "playtime",
+                        onClick = { viewModel.tri.value = "playtime" }
+                    )
+                    Text("Les plus joués", modifier = Modifier.padding(start = 8.dp))
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { viewModel.tri.value = "metacritic" }
+                        .padding(vertical = 6.dp)
+                ) {
+                    RadioButton(
+                        selected = tri == "metacritic",
+                        onClick = { viewModel.tri.value = "metacritic" }
+                    )
+                    Text("Les mieux notés", modifier = Modifier.padding(start = 8.dp))
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { viewModel.tri.value = "released" }
+                        .padding(vertical = 6.dp)
+                ) {
+                    RadioButton(
+                        selected = tri == "released",
+                        onClick = { viewModel.tri.value = "released" }
+                    )
+                    Text("Dernières sorties", modifier = Modifier.padding(start = 8.dp))
                 }
             }
         }

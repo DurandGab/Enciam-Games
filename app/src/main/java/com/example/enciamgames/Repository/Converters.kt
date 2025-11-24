@@ -2,7 +2,7 @@ package com.example.enciamgames.Repository
 
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
-import com.example.enciamgames.JeuVideo
+import com.example.enciamgames.Models.JeuVideo
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 

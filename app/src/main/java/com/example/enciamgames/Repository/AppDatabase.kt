@@ -1,11 +1,9 @@
 package com.example.enciamgames.Repository
 
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.enciamgames.JeuVideo
-import com.example.enciamgames.JeuVideoFavori
+import com.example.enciamgames.Models.JeuVideoFavori
 
 @Database(entities = [JeuVideoFavori::class], version = 1)
 @TypeConverters(Converters::class)

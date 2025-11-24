@@ -1,15 +1,15 @@
 package com.example.enciamgames
 
 import android.app.Application
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.enciamgames.Models.DetailJeuVideo
+import com.example.enciamgames.Models.JeuVideo
+import com.example.enciamgames.Models.JeuVideoFavori
 import com.example.enciamgames.Repository.MonRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlin.String
-import kotlin.collections.listOf
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = MonRepository(
@@ -21,9 +21,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val favoris = MutableStateFlow<List<JeuVideoFavori>>(listOf())
     val recherchenomjeuvideofavori = MutableStateFlow("")
     val tri = mutableStateOf("none")
-
-
-
     val chargementPage = MutableStateFlow(false)
     private var pageActuelle = 1
     private var rechercheEnCours: String? = null
@@ -42,26 +39,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 getRechercheNomJeuVideo(nomRecherche)
             } else {
                 val nouveauJeuVideo = repository.getJeuxVideosLesMieuxNotes(page = pageActuelle)
-                jeuvideo.value += nouveauJeuVideo
+                val nouveaux = (nouveauJeuVideo as? List<*>)?.filterIsInstance<JeuVideo>() ?: listOf()
+                jeuvideo.value = jeuvideo.value + nouveaux
                 pageActuelle++
             }
             chargementPage.value = false
         }
     }
-
-    /*fun getJeuxLesPlusJoues() {
-        viewModelScope.launch {
-            if (chargementPage.value) return@launch
-            chargementPage.value = true
-
-            val nouveauJeuVideo = repository.getJeuxVideosLesPlusJoues(page = pageActuelle)
-            jeuvideo.value += nouveauJeuVideo
-            pageActuelle++
-
-            chargementPage.value = false
-        }
-    }*/
-
     fun getRechercheNomJeuVideo(nom: String) {
         viewModelScope.launch {
             if (chargementPage.value) return@launch
@@ -78,7 +62,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 page = pageActuelle
             )
 
-            val resultatFiltre = resultatRecherche.filter {
+            val listeResultats = (resultatRecherche as? List<*>)?.filterIsInstance<JeuVideo>() ?: listOf()
+
+            val resultatFiltre = listeResultats.filter {
                 it.name.contains(nom, ignoreCase = true)
             }
 

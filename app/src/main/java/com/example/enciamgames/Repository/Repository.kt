@@ -3,10 +3,10 @@ package com.example.enciamgames.Repository
 import android.app.Application
 import android.util.Log
 import androidx.room.Room
-import com.example.enciamgames.DetailJeuVideo
-import com.example.enciamgames.JeuVideo
-import com.example.enciamgames.JeuVideoFavori
-import com.example.enciamgames.RawgResponse
+import com.example.enciamgames.Models.DetailJeuVideo
+import com.example.enciamgames.Models.JeuVideo
+import com.example.enciamgames.Models.JeuVideoFavori
+import com.example.enciamgames.Models.RawgResponse
 import com.squareup.moshi.Moshi
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -16,6 +16,7 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.SIMPLE
+import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.request
 import io.ktor.http.HttpMethod
@@ -64,19 +65,6 @@ class MonRepository (application: Application){
 
         return response.results
     }
-
-    /*suspend fun getJeuxVideosLesPlusJoues(page: Int = 1, pageSize: Int = 20): List<JeuVideo> {
-        val response: RawgResponse = client.request("${baseUrl}games") {
-            method = HttpMethod.Get
-            parameter("key", apiKey)
-            parameter("page", page)
-            parameter("page_size", pageSize)
-            parameter("ordering", "-playtime")
-        }.body()
-
-        return response.results
-    }*/
-
     suspend fun getDetailJeuVideo(id: Int): DetailJeuVideo {
         val response: DetailJeuVideo = client.request("${baseUrl}games/$id") {
             method = HttpMethod.Get

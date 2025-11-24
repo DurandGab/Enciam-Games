@@ -1,4 +1,4 @@
-package com.example.enciamgames
+package com.example.enciamgames.Models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

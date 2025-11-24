@@ -1,4 +1,4 @@
-package com.example.enciamgames
+package com.example.enciamgames.Activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
+import com.example.enciamgames.MainViewModel
 import com.example.enciamgames.Pages.PageAccueilJeuxVideo
 import com.example.enciamgames.Pages.PageDetailJeuVideo
 import com.example.enciamgames.Pages.PageFavoriJeuVideo

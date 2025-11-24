@@ -107,7 +107,6 @@ fun PageDetailJeuVideo(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
 
-                    // --- Note Metacritic ---
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -123,8 +122,6 @@ fun PageDetailJeuVideo(
                             fontWeight = FontWeight.SemiBold
                         )
                     }
-
-                    // --- Date de sortie ---
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
